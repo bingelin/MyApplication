@@ -1,4 +1,4 @@
-package com.a168job.linjb.recyclerview;
+package com.a168job.linjb.recyclerview.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -7,16 +7,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.a168job.linjb.recyclerview.R;
 import com.github.jdsjlzx.ItemDecoration.StickyHeaderAdapter;
 
 import java.util.ArrayList;
 
 /**
- * Created by linjb on 2016/8/5.
+ * Created by linjb on 2016/8/8.
  */
 
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyHolder> implements
-        StickyHeaderAdapter<MyAdapter.MyHeadHolder>{
+        StickyHeaderAdapter<MyAdapter.MyHeadHolder> {
 
     private ArrayList<String> dataList;
     private Context context;
@@ -88,3 +89,4 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyHolder> implemen
     }
 
 }
+

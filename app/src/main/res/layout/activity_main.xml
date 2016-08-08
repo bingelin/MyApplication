@@ -5,7 +5,7 @@
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.a168job.linjb.recyclerview.MainActivity">
+    tools:context="com.a168job.linjb.recyclerview.activity.MainActivity">
 
     <com.github.jdsjlzx.recyclerview.LRecyclerView
         android:id="@+id/main_recyclerView"
