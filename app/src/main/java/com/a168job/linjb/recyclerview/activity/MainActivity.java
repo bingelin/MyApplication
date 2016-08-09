@@ -9,7 +9,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.a168job.linjb.recyclerview.R;
-import com.a168job.linjb.recyclerview.SampleHeader;
+import com.a168job.linjb.recyclerview.help.SampleHeader;
 import com.a168job.linjb.recyclerview.adapter.MyAdapter;
 import com.github.jdsjlzx.interfaces.OnItemClickLitener;
 import com.github.jdsjlzx.recyclerview.LRecyclerView;

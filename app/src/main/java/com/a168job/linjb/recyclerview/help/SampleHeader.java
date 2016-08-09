@@ -1,8 +1,10 @@
-package com.a168job.linjb.recyclerview;
+package com.a168job.linjb.recyclerview.help;
 
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.RelativeLayout;
+
+import com.a168job.linjb.recyclerview.R;
 
 /**
  * RecyclerView的HeaderView，简单的展示一个TextView

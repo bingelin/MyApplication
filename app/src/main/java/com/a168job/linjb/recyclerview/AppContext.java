@@ -1,16 +1,18 @@
 package com.a168job.linjb.recyclerview;
 
+import android.app.Application;
 import android.content.Context;
 
 import com.a168job.linjb.recyclerview.api.ApiClient;
+import com.a168job.linjb.recyclerview.bean.User;
 
 /**
  * Created by linjb on 2016/8/8.
  */
 
-public class AppContext {
+public class AppContext extends Application{
 
-    public static AppContext instance = null;
+    public static AppContext instance;
 
     public static Context mContext = null;
 
@@ -67,22 +69,86 @@ public class AppContext {
      */
     public int currentResumeNum = 0;
 
-    public String login_url = "http://10.88.1.38:8088" + "/android/person/login";
+    private final static String CONF_SESSIONID = "sessionId";
+    private final static String CONF_TALENTNO = "talentNo";
+    private final static String CONF_TALENTDES = "talentDes";
+    private final static String CONF_GLOBELID = "globalId";
+    private final static String CONF_USERNAME = "username";
 
-    public void loginVerify(String account, String password,String userType) {
+    public String login_url = "http://app.job168.com:8080" + "/android/person/login";
 
-        ApiClient.login(this, account, password, userType);
+    public User loginVerify(String account, String password, String userType) {
+
+        return ApiClient.login(this, account, password, userType);
     }
 
-    private AppContext() {
 
-    }
 
-    public static AppContext newInstance(Context context) {
-        mContext = context;
-        if (null == instance) {
-            instance = new AppContext();
-        }
+    /**
+     * 创建APPContext单例
+     * @param
+     * @return
+     */
+    public static AppContext newInstance() {
         return instance;
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        initUserInfo();
+    }
+
+    private void initUserInfo() {
+        sessionId = getProperty(CONF_SESSIONID);
+        globalId = getProperty(CONF_GLOBELID);
+        talentNo = getProperty(CONF_TALENTNO);
+        talentDes = getProperty(CONF_TALENTDES);
+        username = getProperty(CONF_USERNAME);
+    }
+
+    public  void saveLoginInfo(User user) {
+        username = user.getUserName();
+        applyNum = user.getApplyNum();
+        favoriteNum = user.getFavoriteNum();
+        InterviewNum = user.getInterviewNum();
+        balance = user.getBalance();
+        CoinNum = user.getIntegral();
+
+        globalId = user.getGlobalId();
+        talentNo = user.getTalentNo();
+        talentDes = user.getTalentDes();
+        sessionId = user.getSessionId();
+
+        setProperty(CONF_SESSIONID, sessionId);
+        setProperty(CONF_GLOBELID, globalId);
+        setProperty(CONF_TALENTNO, talentNo);
+        setProperty(CONF_TALENTDES, talentDes);
+        setProperty(CONF_USERNAME, username);
+
+
+    }
+
+    private void setProperty(String key, String value) {
+        AppConfig.newInstance(this).set(key, value);
+    }
+
+
+    public String getProperty(String key) {
+        return AppConfig.newInstance(this).get(key);
+    }
+
+    public static boolean isEmpty(String s) {
+        if (s.equals("") || s == null) {
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean isAllEmpty(String s1, String s2) {
+        if (isEmpty(s1) || isEmpty(s2)) {
+            return true;
+        }
+        return false;
     }
 }

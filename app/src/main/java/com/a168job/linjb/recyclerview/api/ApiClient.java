@@ -3,14 +3,12 @@ package com.a168job.linjb.recyclerview.api;
 import android.util.Log;
 
 import com.a168job.linjb.recyclerview.AppContext;
-import com.a168job.linjb.recyclerview.bean.result;
+import com.a168job.linjb.recyclerview.bean.User;
 import com.android.volley.AuthFailureError;
-import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
@@ -23,39 +21,59 @@ import java.util.Map;
  */
 
 public class ApiClient {
+    private static String jsonData="";
 
 
-
-    public static void login(AppContext ac, String account, String password, String userType) {
+    public static User login(AppContext ac, String account, String password, String userType) {
         Map<String, String> params = new HashMap<String, String>();
         params.put("account", account);
         params.put("password", password);
         params.put("userType", userType);
         String url = ac.login_url;
-        _post(ac, url, params, null);
+        return User.parse(_post(ac, url, params, null));
     }
 
-    private static String _post(AppContext ac, String url, final Map<String, String> params, Object o) {
-        final String jsonData = null;
-        RequestQueue mQueue = Volley.newRequestQueue(ac.mContext);
-        JsonRequest<result> mRequest = new JsonRequest<result>(Request.Method.POST, url, result.class, new Response.Listener<result>() {
-            @Override
-            public void onResponse(result result) {
+    private static String _post(AppContext ac, final String url, final Map<String, String> params, Object o) {
 
+        RequestQueue mQueue = Volley.newRequestQueue(ac.getApplicationContext());
+        StringRequest mQuest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String s) {
+                Log.i("Binge", s);
+                jsonData = s;
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError volleyError) {
 
             }
-        }) {
+        }){
             @Override
-            protected Response<result> parseNetworkResponse(NetworkResponse networkResponse) {
-                return null;
+            protected Map<String, String> getParams() throws AuthFailureError {
+                return params;
             }
         };
-        mQueue.add(mRequest);
-        return null;
+
+//
+//        GsonRequest<Result<User>> mQuest = new GsonRequest<Result<User>>(Request.Method.POST, url, Result<User>.getClass(), new Response.Listener<Result<User>>() {
+//            @Override
+//            public void onResponse(Result<User> userResult) {
+//
+//            }
+//        }, new Response.ErrorListener() {
+//            @Override
+//            public void onErrorResponse(VolleyError volleyError) {
+//
+//            }
+//        }){
+//            @Override
+//            protected Map<String, String> getParams() throws AuthFailureError {
+//                return params;
+//            }
+//        };
+        mQueue.add(mQuest);
+
+        return jsonData;
     }
 
 }
