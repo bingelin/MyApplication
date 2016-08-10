@@ -27,6 +27,9 @@ public class Login extends Activity {
             if (msg.what == 1) {
                 User user = (User) msg.obj;
                 ac.saveLoginInfo(user);
+                UIHelp.showMain(Login.this);
+            } else if (msg.what == -1) {
+                UIHelp.toast(Login.this,(String) msg.obj);
             }
         }
     };
@@ -51,13 +54,16 @@ public class Login extends Activity {
         if (ac.isAllEmpty(username, password)) {
             UIHelp.toast(this, "账号密码不能为空");
         } else {
-            Message message = loginHandler.obtainMessage();
+            Message message = Message.obtain(loginHandler);
             User user = ac.loginVerify(username, password, LOGIN_USERTYPE_PERSON);
-            message.what = 1;
-            message.obj = user;
+            if (user.isOK()) {
+                message.what = 1;
+                message.obj = user;
+            } else {
+                message.what = -1;
+                message.obj = user.getMessage();
+            }
             message.sendToTarget();
         }
-
     }
-
 }

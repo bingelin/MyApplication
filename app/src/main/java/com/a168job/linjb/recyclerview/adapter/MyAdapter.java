@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.a168job.linjb.recyclerview.R;
-import com.github.jdsjlzx.ItemDecoration.StickyHeaderAdapter;
 
 import java.util.ArrayList;
 
@@ -16,11 +15,22 @@ import java.util.ArrayList;
  * Created by linjb on 2016/8/8.
  */
 
-public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyHolder> implements
-        StickyHeaderAdapter<MyAdapter.MyHeadHolder> {
+public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyHolder>  {
 
     private ArrayList<String> dataList;
     private Context context;
+
+    public interface OnItemClickListener{
+        void onItemClick(View view, int position);
+
+        void onItemLongClick(View view, int position);
+    }
+
+    private OnItemClickListener mOnItemClickListener;
+
+    public void setmOnItemClickListenr(OnItemClickListener mOnItemClickListener) {
+        this.mOnItemClickListener = mOnItemClickListener;
+    }
 
     public MyAdapter(ArrayList<String> dataList , Context context) {
         this.dataList = dataList;
@@ -34,8 +44,25 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyHolder> implemen
     }
 
     @Override
-    public void onBindViewHolder(MyHolder holder, int position) {
+    public void onBindViewHolder(final MyHolder holder, final int position) {
         holder.tv.setText(dataList.get(position));
+        if (mOnItemClickListener != null) {
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    int pos = holder.getLayoutPosition();
+                    mOnItemClickListener.onItemClick(view,pos);
+                }
+            });
+            holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    int pos = holder.getLayoutPosition();
+                    mOnItemClickListener.onItemLongClick(view, pos);
+                    return false;
+                }
+            });
+        }
     }
 
     @Override
@@ -43,21 +70,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyHolder> implemen
         return dataList == null ? 0 : dataList.size();
     }
 
-    @Override
-    public long getHeaderId(int i) {
-        return  (long) i / 7;
-    }
 
-    @Override
-    public MyHeadHolder onCreateHeaderViewHolder(ViewGroup viewGroup) {
-        View view = LayoutInflater.from(context).inflate(R.layout.head, viewGroup, false);
-        return new MyHeadHolder(view);
-    }
-
-    @Override
-    public void onBindHeaderViewHolder(MyHeadHolder myHeadHolder, int i) {
-        myHeadHolder.tv_head.setText(i);
-    }
 
     class MyHolder extends RecyclerView.ViewHolder{
         TextView tv;
@@ -67,13 +80,6 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyHolder> implemen
         }
     }
 
-    class MyHeadHolder extends RecyclerView.ViewHolder {
-        TextView tv_head;
-        public MyHeadHolder(View itemView) {
-            super(itemView);
-            tv_head = (TextView) itemView.findViewById(R.id.head_tv);
-        }
-    }
 
 
     public void addAll(ArrayList<String> list) {

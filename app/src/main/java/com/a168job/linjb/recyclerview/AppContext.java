@@ -79,10 +79,13 @@ public class AppContext extends Application{
 
     public User loginVerify(String account, String password, String userType) {
 
-        return ApiClient.login(this, account, password, userType);
+        return  ApiClient.login(this, account, password, userType);
+
     }
 
-
+    public String getFavorites(int pageNo) {
+        return ApiClient.getFavorites(this, pageNo);
+    }
 
     /**
      * 创建APPContext单例
@@ -133,7 +136,6 @@ public class AppContext extends Application{
         AppConfig.newInstance(this).set(key, value);
     }
 
-
     public String getProperty(String key) {
         return AppConfig.newInstance(this).get(key);
     }
@@ -150,5 +152,27 @@ public class AppContext extends Application{
             return true;
         }
         return false;
+    }
+
+    public String getGlobalId() {
+        return globalId;
+    }
+    public String getSessionId() {
+        return sessionId;
+    }
+    public String getTalentNo() {
+        return talentNo;
+    }
+
+    public void setGlobalId(String globalId) {
+        this.globalId = globalId;
+    }
+
+    public void setSessionId(String sessionId) {
+        this.sessionId = sessionId;
+    }
+
+    public void setTalentNo(String talentNo) {
+        this.talentNo = talentNo;
     }
 }

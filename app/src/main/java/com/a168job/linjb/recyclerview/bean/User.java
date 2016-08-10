@@ -14,7 +14,7 @@ public class User {
     private String balance  = "";
     private String favoriteNum = "";
     private String interviewNum = "";
-    private String resultCode = "";
+    private  int resultCode = 0 ;
     private String message = "";
     private String globalId = "";
     private String talentNo = "";
@@ -70,11 +70,11 @@ public class User {
         this.message = message;
     }
 
-    public String getResultCode() {
+    public int getResultCode() {
         return resultCode;
     }
 
-    public void setResultCode(String resultCode) {
+    public void setResultCode(int resultCode) {
         this.resultCode = resultCode;
     }
 
@@ -130,23 +130,28 @@ public class User {
         User u = new User();
         try {
             JSONObject jsonObject = new JSONObject(jsonData).getJSONObject("result");
-            u.setUserName(jsonObject.getString("userName"));
-            u.setApplyNum(jsonObject.getString("applyNum"));
-            u.setBalance(jsonObject.getString("balance"));
-            u.setFavoriteNum(jsonObject.getString("favoriteNum"));
-            u.setGlobalId(jsonObject.getString("globalId"));
-            u.setIntegral(jsonObject.getString("integral"));
-            u.setInterviewNum(jsonObject.getString("interviewNum"));
-            u.setLoginEnum(jsonObject.getString("loginEnum"));
-            u.setMessage(jsonObject.getString("message"));
-            u.setResultCode(jsonObject.getString("resultCode"));
-            u.setSessionId(jsonObject.getString("sessionId"));
-            u.setTalentDes(jsonObject.getString("talentDes"));
-            u.setTalentNo(jsonObject.getString("talentNo"));
+            u.setUserName(jsonObject.optString("userName"));
+            u.setApplyNum(jsonObject.optString("applyNum"));
+            u.setBalance(jsonObject.optString("balance"));
+            u.setFavoriteNum(jsonObject.optString("favoriteNum"));
+            u.setGlobalId(jsonObject.optString("globalId"));
+            u.setIntegral(jsonObject.optString("integral"));
+            u.setInterviewNum(jsonObject.optString("interviewNum"));
+            u.setLoginEnum(jsonObject.optString("loginEnum"));
+            u.setMessage(jsonObject.optString("message"));
+            u.setResultCode(jsonObject.optInt("resultCode"));
+            u.setSessionId(jsonObject.optString("sessionId"));
+            u.setTalentDes(jsonObject.optString("talentDes"));
+            u.setTalentNo(jsonObject.optString("talentNo"));
         } catch (JSONException e) {
             e.printStackTrace();
         }
         return u;
+    }
+
+    public boolean isOK() {
+        System.out.println("resultCode"+message);
+        return 0 == resultCode;
     }
 
 }

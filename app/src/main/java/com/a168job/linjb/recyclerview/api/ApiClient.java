@@ -3,6 +3,7 @@ package com.a168job.linjb.recyclerview.api;
 import android.util.Log;
 
 import com.a168job.linjb.recyclerview.AppContext;
+import com.a168job.linjb.recyclerview.bean.Urls;
 import com.a168job.linjb.recyclerview.bean.User;
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -30,7 +31,17 @@ public class ApiClient {
         params.put("password", password);
         params.put("userType", userType);
         String url = ac.login_url;
-        return User.parse(_post(ac, url, params, null));
+        User user = User.parse(_post(ac, url, params, null));
+        return user;
+    }
+
+    public static String getFavorites(AppContext ac, int pageNo) {
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("globalId", ac.getGlobalId());
+        params.put("sessionId", ac.getSessionId());
+        params.put("talentNo", ac.getTalentNo());
+        String url = Urls.JOB_FAVORITE_URL;
+        return _post(ac, url, params, null);
     }
 
     private static String _post(AppContext ac, final String url, final Map<String, String> params, Object o) {
@@ -72,7 +83,6 @@ public class ApiClient {
 //            }
 //        };
         mQueue.add(mQuest);
-
         return jsonData;
     }
 
