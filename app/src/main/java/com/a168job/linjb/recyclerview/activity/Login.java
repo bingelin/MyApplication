@@ -19,6 +19,7 @@ import com.a168job.linjb.recyclerview.help.UIHelp;
 public class Login extends Activity {
     private EditText et_username,et_password;
     private final static String  LOGIN_USERTYPE_PERSON = 1+"";
+    String username,password;
     public AppContext ac;
     private Handler loginHandler = new Handler(){
         @Override
@@ -27,7 +28,7 @@ public class Login extends Activity {
             if (msg.what == 1) {
                 User user = (User) msg.obj;
                 ac.saveLoginInfo(user);
-                UIHelp.showMain(Login.this);
+//                UIHelp.showMain(Login.this);
             } else if (msg.what == -1) {
                 UIHelp.toast(Login.this,(String) msg.obj);
             }
@@ -48,22 +49,27 @@ public class Login extends Activity {
     }
 
     public void login(View view) {
-        String username,password;
         username = et_username.getText().toString();
         password = et_password.getText().toString();
         if (ac.isAllEmpty(username, password)) {
             UIHelp.toast(this, "账号密码不能为空");
         } else {
-            Message message = Message.obtain(loginHandler);
-            User user = ac.loginVerify(username, password, LOGIN_USERTYPE_PERSON);
-            if (user.isOK()) {
-                message.what = 1;
-                message.obj = user;
-            } else {
-                message.what = -1;
-                message.obj = user.getMessage();
-            }
-            message.sendToTarget();
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    Message message = Message.obtain(loginHandler);
+                    User user = ac.loginVerify(username, password, LOGIN_USERTYPE_PERSON);
+                    if (user.isOK()) {
+                        message.what = 1;
+                        message.obj = user;
+                    } else {
+                        message.what = -1;
+                        message.obj = user.getMessage();
+                    }
+                    message.sendToTarget();
+                }
+            }).start();
+
         }
     }
 }

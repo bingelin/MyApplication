@@ -14,7 +14,7 @@ public class User {
     private String balance  = "";
     private String favoriteNum = "";
     private String interviewNum = "";
-    private  int resultCode = 0 ;
+    private  int resultCode  =0;
     private String message = "";
     private String globalId = "";
     private String talentNo = "";
@@ -150,8 +150,7 @@ public class User {
     }
 
     public boolean isOK() {
-        System.out.println("resultCode"+message);
+        System.out.println("resultCode---->"+resultCode+"  "+getResultCode());
         return 0 == resultCode;
     }
-
 }

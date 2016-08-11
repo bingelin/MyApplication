@@ -1,18 +1,19 @@
 package com.a168job.linjb.recyclerview.api;
 
+import android.app.Application;
 import android.util.Log;
 
 import com.a168job.linjb.recyclerview.AppContext;
 import com.a168job.linjb.recyclerview.bean.Urls;
 import com.a168job.linjb.recyclerview.bean.User;
-import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
+import com.squareup.okhttp.Call;
+import com.squareup.okhttp.Callback;
+import com.squareup.okhttp.FormEncodingBuilder;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,60 +22,78 @@ import java.util.Map;
  * Created by linjb on 2016/8/8.
  */
 
-public class ApiClient {
-    private static String jsonData="";
+public class ApiClient extends Application{
 
 
     public static User login(AppContext ac, String account, String password, String userType) {
         Map<String, String> params = new HashMap<String, String>();
-        params.put("account", account);
         params.put("password", password);
+        params.put("account", account);
+
         params.put("userType", userType);
         String url = ac.login_url;
-        User user = User.parse(_post(ac, url, params, null));
-        return user;
+        String resq = _post(ac, url, params, null);
+        System.out.println("resq----"+resq);
+        return User.parse(resq);
     }
 
     public static String getFavorites(AppContext ac, int pageNo) {
+
         Map<String, String> params = new HashMap<String, String>();
         params.put("globalId", ac.getGlobalId());
         params.put("sessionId", ac.getSessionId());
         params.put("talentNo", ac.getTalentNo());
         String url = Urls.JOB_FAVORITE_URL;
-        return _post(ac, url, params, null);
+        if (_post(ac, url, params, null).equals("") || _post(ac, url, params, null) == null) {
+            return null;
+        } else {
+            return _post(ac, url, params, null);
+        }
+
     }
 
-    private static String _post(AppContext ac, final String url, final Map<String, String> params, Object o) {
+    private static String _post(AppContext ac, final String Url, final Map<String, String> params, Object o) {
 
-        RequestQueue mQueue = Volley.newRequestQueue(ac.getApplicationContext());
-        StringRequest mQuest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String s) {
-                Log.i("Binge", s);
-                jsonData = s;
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError volleyError) {
+//        try {
+//            URL url = new URL(Url);
+//            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+//            connection.setRequestMethod("POST");
+////            Set<String> keySet = params.keySet();
+////            for (Iterator<String> iterator = keySet.iterator(); iterator.hasNext();) {
+////                String key = iterator.next();
+////                String value = params.get(key);
+////                Log.i("Binge",key+"++++"+value);
+////                connection.setRequestProperty(key, value);
+////            }
+//            connection.setRequestProperty("account", "bingelin");
+//            connection.setRequestProperty("password", params.get("password"));
+//            connection.setRequestProperty("userType", params.get("userType"));
+//            connection.setDoOutput(true);
+//            connection.setDoInput(true);
+//            connection.setConnectTimeout(1000 * 5);
+//            InputStream is = connection.getInputStream();
+//            System.out.println("available---"+is.available());
+//            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//            int len;
+//            while ((len = is.read())!= -1) {
+//                baos.write(len);
+//            }
+//            jsonData = baos.toString();
+//        } catch (java.io.IOException e) {
+//            e.printStackTrace();
+//        }
+//        Log.i("Binge", jsonData);
 
-            }
-        }){
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                return params;
-            }
-        };
-
-//
-//        GsonRequest<Result<User>> mQuest = new GsonRequest<Result<User>>(Request.Method.POST, url, Result<User>.getClass(), new Response.Listener<Result<User>>() {
+//        final String[] jsonData = {""};
+//        StringRequest mQuest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
 //            @Override
-//            public void onResponse(Result<User> userResult) {
-//
+//            public void onResponse(String s) {
+//                Log.i("Binge", s);
+//                jsonData[0] = s;
 //            }
 //        }, new Response.ErrorListener() {
 //            @Override
 //            public void onErrorResponse(VolleyError volleyError) {
-//
 //            }
 //        }){
 //            @Override
@@ -82,7 +101,33 @@ public class ApiClient {
 //                return params;
 //            }
 //        };
-        mQueue.add(mQuest);
+//        ac.getRequestQueue().add(mQuest);
+//        System.out.println("jsonData-----"+jsonData[0]);
+
+        String jsonData = "";
+        FormEncodingBuilder builder = new FormEncodingBuilder();
+        if (params != null) {
+            for (Map.Entry<String, String> entry : params.entrySet()) {
+                Log.i("参数:", entry.getKey() + ":" + entry.getValue());
+                builder.add(entry.getKey(), entry.getValue().toString());
+            }
+        }
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder().url(Url).post(builder.build()).build();
+        Call call = client.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(Request request, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Response response) throws IOException {
+                jsonData = "body"+response.body().string();
+            }
+        });
+        Log.i("BingeJson", jsonData);
+        System.out.println("BingeJson$$$$$$");
         return jsonData;
     }
 

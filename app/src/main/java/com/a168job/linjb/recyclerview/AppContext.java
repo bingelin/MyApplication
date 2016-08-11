@@ -5,6 +5,8 @@ import android.content.Context;
 
 import com.a168job.linjb.recyclerview.api.ApiClient;
 import com.a168job.linjb.recyclerview.bean.User;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.Volley;
 
 /**
  * Created by linjb on 2016/8/8.
@@ -69,6 +71,9 @@ public class AppContext extends Application{
      */
     public int currentResumeNum = 0;
 
+    public RequestQueue mQueue ;
+
+
     private final static String CONF_SESSIONID = "sessionId";
     private final static String CONF_TALENTNO = "talentNo";
     private final static String CONF_TALENTDES = "talentDes";
@@ -99,6 +104,7 @@ public class AppContext extends Application{
     @Override
     public void onCreate() {
         super.onCreate();
+        instance = this;
         initUserInfo();
     }
 
@@ -174,5 +180,9 @@ public class AppContext extends Application{
 
     public void setTalentNo(String talentNo) {
         this.talentNo = talentNo;
+    }
+
+    public RequestQueue getRequestQueue() {
+        return Volley.newRequestQueue(getApplicationContext());
     }
 }
