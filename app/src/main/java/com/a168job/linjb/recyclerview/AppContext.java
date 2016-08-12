@@ -4,9 +4,12 @@ import android.app.Application;
 import android.content.Context;
 
 import com.a168job.linjb.recyclerview.api.ApiClient;
+import com.a168job.linjb.recyclerview.bean.JobFavorite;
 import com.a168job.linjb.recyclerview.bean.User;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
+
+import java.util.ArrayList;
 
 /**
  * Created by linjb on 2016/8/8.
@@ -88,7 +91,7 @@ public class AppContext extends Application{
 
     }
 
-    public String getFavorites(int pageNo) {
+    public ArrayList<JobFavorite> getFavorites(int pageNo) {
         return ApiClient.getFavorites(this, pageNo);
     }
 
@@ -128,6 +131,7 @@ public class AppContext extends Application{
         talentNo = user.getTalentNo();
         talentDes = user.getTalentDes();
         sessionId = user.getSessionId();
+
 
         setProperty(CONF_SESSIONID, sessionId);
         setProperty(CONF_GLOBELID, globalId);

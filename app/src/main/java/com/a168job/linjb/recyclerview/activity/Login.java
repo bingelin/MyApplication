@@ -28,7 +28,7 @@ public class Login extends Activity {
             if (msg.what == 1) {
                 User user = (User) msg.obj;
                 ac.saveLoginInfo(user);
-//                UIHelp.showMain(Login.this);
+                UIHelp.showMain(Login.this);
             } else if (msg.what == -1) {
                 UIHelp.toast(Login.this,(String) msg.obj);
             }

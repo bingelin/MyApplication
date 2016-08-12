@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.a168job.linjb.recyclerview.R;
+import com.a168job.linjb.recyclerview.bean.JobFavorite;
 
 import java.util.ArrayList;
 
@@ -17,7 +18,7 @@ import java.util.ArrayList;
 
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyHolder>  {
 
-    private ArrayList<String> dataList;
+    private ArrayList<JobFavorite> dataList;
     private Context context;
 
     public interface OnItemClickListener{
@@ -32,7 +33,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyHolder>  {
         this.mOnItemClickListener = mOnItemClickListener;
     }
 
-    public MyAdapter(ArrayList<String> dataList , Context context) {
+    public MyAdapter(ArrayList<JobFavorite> dataList , Context context) {
         this.dataList = dataList;
         this.context = context;
     }
@@ -45,7 +46,13 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyHolder>  {
 
     @Override
     public void onBindViewHolder(final MyHolder holder, final int position) {
-        holder.tv.setText(dataList.get(position));
+        holder.tv_station.setText(dataList.get(position).getStation());
+        holder.tv_expDate.setText(dataList.get(position).getExpDate());
+        holder.tv_name.setText(dataList.get(position).getName());
+        holder.tv_regDate.setText(dataList.get(position).getRegDate());
+        holder.tv_stowdate.setText(dataList.get(position).getStowdate());
+        holder.tv_site.setText(dataList.get(position).getUnitNo());
+
         if (mOnItemClickListener != null) {
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -73,16 +80,28 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyHolder>  {
 
 
     class MyHolder extends RecyclerView.ViewHolder{
-        TextView tv;
+        TextView tv_station;
+        TextView tv_site;
+        TextView tv_name;
+        TextView tv_stowdate;
+        TextView tv_regDate;
+        TextView tv_expDate;
+
         public MyHolder(View itemView) {
             super(itemView);
-            tv = (TextView) itemView.findViewById(R.id.item_tv);
+            tv_station = (TextView) itemView.findViewById(R.id.item_station);
+            tv_site = (TextView) itemView.findViewById(R.id.item_site);
+            tv_name = (TextView) itemView.findViewById(R.id.item_name);
+            tv_stowdate = (TextView) itemView.findViewById(R.id.item_stowdate);
+            tv_regDate = (TextView) itemView.findViewById(R.id.item_regDate);
+            tv_expDate = (TextView) itemView.findViewById(R.id.item_expDate);
+
         }
     }
 
 
 
-    public void addAll(ArrayList<String> list) {
+    public void addAll(ArrayList<JobFavorite> list) {
         int lastIndex = dataList.size();
         if (dataList.addAll(list)) {
             notifyItemRangeInserted(lastIndex,list.size());
@@ -93,6 +112,12 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyHolder>  {
         dataList.clear();
         notifyDataSetChanged();
     }
+
+    public void setData(ArrayList<JobFavorite> list) {
+        dataList = list;
+        notifyDataSetChanged();
+    }
+
 
 }
 

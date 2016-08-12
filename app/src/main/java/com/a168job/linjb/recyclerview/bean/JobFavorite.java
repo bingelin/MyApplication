@@ -205,11 +205,13 @@ public class JobFavorite extends Result{
                     list.add(a);
                 }
             }
-
+//            list.set(jsonObject.optInt("resultCode"));
+//            list.set(jsonObject.optString("message"));
+//            list.setPageNo(jsonObject.optInt("pageNo"));
+//            list.setPageSize(jsonObject.optInt("pageSize"));
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return null;
+        return list;
     }
-
 }

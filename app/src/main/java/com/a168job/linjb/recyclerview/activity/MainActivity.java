@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.a168job.linjb.recyclerview.R;
+import com.a168job.linjb.recyclerview.bean.JobFavorite;
 import com.a168job.linjb.recyclerview.help.SampleHeader;
 import com.a168job.linjb.recyclerview.adapter.MyAdapter;
 import com.github.jdsjlzx.interfaces.OnItemClickLitener;
@@ -23,7 +24,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
 
     private LRecyclerView mLRecyclerView;
-    private ArrayList<String> dataList;
+    private ArrayList<JobFavorite> dataList;
     private LRecyclerViewAdapter mLRecyclerViewAdapter;
     private MyAdapter adapter;
     private String TAG = "Binge";
@@ -42,9 +43,7 @@ public class MainActivity extends AppCompatActivity {
         mLRecyclerView = (LRecyclerView) findViewById(R.id.main_recyclerView);
 
         dataList = new ArrayList<>();
-        for (int i = 0; i < 20; i++) {
-            dataList.add("item" + i);
-        }
+
 //        adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, dataList);
         adapter = new MyAdapter(dataList, this);
         mLRecyclerViewAdapter = new LRecyclerViewAdapter(this, adapter);
@@ -147,13 +146,7 @@ public class MainActivity extends AppCompatActivity {
 
                     int currentSize = adapter.getItemCount();
 
-                    ArrayList<String> newList = new ArrayList<>();
-                    for (int i = 0; i < 10 ; i++) {
-                        if (newList.size() + currentSize >= TOTAL_COUNTER) {
-                            break;
-                        }
-                        newList.add("item" + (currentSize+i));
-                    }
+                    ArrayList<JobFavorite> newList = new ArrayList<>();
 
                     addItems(newList);
                     if (isRefresh) {
@@ -181,7 +174,7 @@ public class MainActivity extends AppCompatActivity {
         mLRecyclerViewAdapter.notifyDataSetChanged();
     }
 
-    private void addItems(ArrayList<String> newList) {
+    private void addItems(ArrayList<JobFavorite> newList) {
         adapter.addAll(newList);
         mCurrentCounter += newList.size();
     }

@@ -4,16 +4,16 @@ import android.app.Application;
 import android.util.Log;
 
 import com.a168job.linjb.recyclerview.AppContext;
+import com.a168job.linjb.recyclerview.bean.JobFavorite;
 import com.a168job.linjb.recyclerview.bean.Urls;
 import com.a168job.linjb.recyclerview.bean.User;
-import com.squareup.okhttp.Call;
-import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.FormEncodingBuilder;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,31 +29,24 @@ public class ApiClient extends Application{
         Map<String, String> params = new HashMap<String, String>();
         params.put("password", password);
         params.put("account", account);
-
         params.put("userType", userType);
         String url = ac.login_url;
-        String resq = _post(ac, url, params, null);
-        System.out.println("resq----"+resq);
-        return User.parse(resq);
+//        String resq = _post(ac, url, params, null);
+        return User.parse(_post(ac, url, params, null));
     }
 
-    public static String getFavorites(AppContext ac, int pageNo) {
+    public static ArrayList<JobFavorite> getFavorites(AppContext ac, int pageNo) {
 
         Map<String, String> params = new HashMap<String, String>();
         params.put("globalId", ac.getGlobalId());
         params.put("sessionId", ac.getSessionId());
         params.put("talentNo", ac.getTalentNo());
         String url = Urls.JOB_FAVORITE_URL;
-        if (_post(ac, url, params, null).equals("") || _post(ac, url, params, null) == null) {
-            return null;
-        } else {
-            return _post(ac, url, params, null);
-        }
+        return JobFavorite.parse(_post(ac, url, params, null));
 
     }
 
     private static String _post(AppContext ac, final String Url, final Map<String, String> params, Object o) {
-
 //        try {
 //            URL url = new URL(Url);
 //            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -83,15 +76,14 @@ public class ApiClient extends Application{
 //            e.printStackTrace();
 //        }
 //        Log.i("Binge", jsonData);
-
 //        final String[] jsonData = {""};
-//        StringRequest mQuest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+//        StringRequest mQuest = new StringRequest(com.android.volley.Request.Method.POST, Url, new com.android.volley.Response.Listener<String>() {
 //            @Override
 //            public void onResponse(String s) {
-//                Log.i("Binge", s);
+//                Log.i("Binge", "------"+s);
 //                jsonData[0] = s;
 //            }
-//        }, new Response.ErrorListener() {
+//        }, new com.android.volley.Response.ErrorListener() {
 //            @Override
 //            public void onErrorResponse(VolleyError volleyError) {
 //            }
@@ -102,8 +94,6 @@ public class ApiClient extends Application{
 //            }
 //        };
 //        ac.getRequestQueue().add(mQuest);
-//        System.out.println("jsonData-----"+jsonData[0]);
-
         String jsonData = "";
         FormEncodingBuilder builder = new FormEncodingBuilder();
         if (params != null) {
@@ -114,21 +104,18 @@ public class ApiClient extends Application{
         }
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder().url(Url).post(builder.build()).build();
-        Call call = client.newCall(request);
-        call.enqueue(new Callback() {
-            @Override
-            public void onFailure(Request request, IOException e) {
-
+        try {
+            Response response = client.newCall(request).execute();
+            if (response.isSuccessful()) {
+                jsonData =  response.body().string();
             }
-
-            @Override
-            public void onResponse(Response response) throws IOException {
-                jsonData = "body"+response.body().string();
-            }
-        });
-        Log.i("BingeJson", jsonData);
-        System.out.println("BingeJson$$$$$$");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        System.out.println("jsonData---"+jsonData);
         return jsonData;
+//
+//        return jsonData[0];
     }
 
 }
