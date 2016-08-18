@@ -41,6 +41,7 @@ public class ApiClient extends Application{
         params.put("globalId", ac.getGlobalId());
         params.put("sessionId", ac.getSessionId());
         params.put("talentNo", ac.getTalentNo());
+        params.put("pageNo", String.valueOf(pageNo));
         String url = Urls.JOB_FAVORITE_URL;
         return JobFavorite.parse(_post(ac, url, params, null));
 

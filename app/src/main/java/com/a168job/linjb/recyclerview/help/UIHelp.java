@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.widget.Toast;
 
 import com.a168job.linjb.recyclerview.activity.Main;
+import com.a168job.linjb.recyclerview.activity.second;
 
 /**
  * Created by linjb on 2016/8/9.
@@ -19,6 +20,11 @@ public class UIHelp {
 
     public static void showMain(Activity activity) {
         Intent intent = new Intent(activity, Main.class);
+        activity.startActivity(intent);
+    }
+
+    public static void showSecond(Activity activity) {
+        Intent intent = new Intent(activity, second.class);
         activity.startActivity(intent);
     }
 

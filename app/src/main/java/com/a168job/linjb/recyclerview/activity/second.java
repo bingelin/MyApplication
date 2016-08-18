@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.a168job.linjb.recyclerview.AppContext;
@@ -13,20 +14,16 @@ import com.a168job.linjb.recyclerview.adapter.MenuAdapter;
 import com.a168job.linjb.recyclerview.adapter.MyAdapter;
 import com.a168job.linjb.recyclerview.bean.JobFavorite;
 import com.a168job.linjb.recyclerview.help.UIHelp;
-import com.github.jdsjlzx.recyclerview.LRecyclerView;
 import com.github.jdsjlzx.recyclerview.LRecyclerViewAdapter;
-import com.github.jdsjlzx.recyclerview.ProgressStyle;
-import com.github.jdsjlzx.util.RecyclerViewStateUtils;
-import com.github.jdsjlzx.view.LoadingFooter;
 
 import java.util.ArrayList;
 
 /**
- * Created by linjb on 2016/8/10.
+ * Created by linjb on 2016/8/18.
  */
 
-public class Main extends Activity {
-    private LRecyclerView mRecycler;
+public class second extends Activity {
+    private RecyclerView mRecycler;
     private ArrayList<JobFavorite> dataList= new ArrayList<>();
     private MyAdapter mAdapter;
     private LRecyclerViewAdapter mLRecyclerViewAdapter;
@@ -48,7 +45,6 @@ public class Main extends Activity {
                 if (isRefresh) {
                     mAdapter.clear();
                     isRefresh = false;
-                    mRecycler.refreshComplete();
                     dataList = list;
                     mAdapter.setData(dataList); //将数据全部加载到适配器中
                 } else {
@@ -58,9 +54,7 @@ public class Main extends Activity {
 //                        dataList = list;
 //                    }
                     if (list.size() < RQUEST_COUNT) {
-                        RecyclerViewStateUtils.setFooterViewState(Main.this, mRecycler, RQUEST_COUNT, LoadingFooter.State.TheEnd, null);
                     } else {
-                        RecyclerViewStateUtils.setFooterViewState(Main.this, mRecycler, RQUEST_COUNT, LoadingFooter.State.Loading, null);
                     }
                     mAdapter.addAll(list);
                 }
@@ -79,7 +73,7 @@ public class Main extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
+        setContentView(R.layout.second);
         ac = (AppContext) getApplication();
         loadData();
         initView();
@@ -100,8 +94,6 @@ public class Main extends Activity {
                 }
                 ArrayList<JobFavorite> list = new ArrayList<JobFavorite>();
 
-
-
                 list = ac.getFavorites(pageNo);
                 if (list.size() > 0) {
                     Message msg = loadingHandler.obtainMessage();
@@ -116,53 +108,18 @@ public class Main extends Activity {
     private void initEvent() {
         if (dataList.size() >= 0) {
             mAdapter = new MyAdapter(dataList, this);
-//            mMenuAdapter = new MenuAdapter();
-//            mMenuAdapter.setDataList(dataList);
-
-            mLRecyclerViewAdapter = new LRecyclerViewAdapter(this, mAdapter);
-            mRecycler.setAdapter(mLRecyclerViewAdapter);
+            mRecycler.setAdapter(mAdapter);
             mRecycler.setLayoutManager(new LinearLayoutManager(this));
-//            LoadingFooter.State state = RecyclerViewStateUtils.getFooterViewState(mRecycler);
-            mRecycler.setRefreshProgressStyle(ProgressStyle.BallSpinFadeLoader);
-            mRecycler.setLScrollListener(new LRecyclerView.LScrollListener() {
-                @Override
-                public void onRefresh() {
-                    isRefresh = true;
-                    loadData();
-                }
-
-                @Override
-                public void onScrollUp() {
-
-                }
-
-                @Override
-                public void onScrollDown() {
-
-                }
-
-                @Override
-                public void onBottom() {
-                    LoadingFooter.State state = RecyclerViewStateUtils.getFooterViewState(mRecycler);
-                    loadData();
-                }
-
-                @Override
-                public void onScrolled(int i, int i1) {
-
-                }
-            });
-
             mAdapter.setmOnItemClickListenr(new MyAdapter.OnItemClickListener() {
                 @Override
                 public void onItemClick(View view, int position) {
-                    UIHelp.toast(Main.this, position + " onClick");
+                    UIHelp.toast(second.this, position + " onClick");
 //                    loadData();
                 }
 
                 @Override
                 public void onItemLongClick(View view, int position) {
-                    UIHelp.toast(Main.this, position + " LongClick");
+                    UIHelp.toast(second.this, position + " LongClick");
                 }
             });
 //            mRecycler.setRefreshing(true);
@@ -170,6 +127,8 @@ public class Main extends Activity {
     }
 
     private void initView() {
-        mRecycler = (LRecyclerView) findViewById(R.id.main_recycler);
+        mRecycler = (RecyclerView) findViewById(R.id.second_recycler);
     }
 }
+
+
