@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
+import android.widget.ProgressBar;
 
 import com.a168job.linjb.recyclerview.AppContext;
 import com.a168job.linjb.recyclerview.R;
@@ -27,6 +28,7 @@ import java.util.ArrayList;
 
 public class Main extends Activity {
     private LRecyclerView mRecycler;
+    private ProgressBar mProgressBar;
     private ArrayList<JobFavorite> dataList= new ArrayList<>();
     private MyAdapter mAdapter;
     private LRecyclerViewAdapter mLRecyclerViewAdapter;
@@ -44,6 +46,7 @@ public class Main extends Activity {
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             if (msg.what == 1) {
+                mProgressBar.setVisibility(View.GONE);
                 ArrayList<JobFavorite> list = (ArrayList<JobFavorite>) msg.obj;
                 if (isRefresh) {
                     mAdapter.clear();
@@ -171,5 +174,6 @@ public class Main extends Activity {
 
     private void initView() {
         mRecycler = (LRecyclerView) findViewById(R.id.main_recycler);
+        mProgressBar = (ProgressBar) findViewById(R.id.main_progress);
     }
 }

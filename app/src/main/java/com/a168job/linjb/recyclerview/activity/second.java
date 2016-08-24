@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 
 import com.a168job.linjb.recyclerview.AppContext;
@@ -17,6 +18,12 @@ import com.a168job.linjb.recyclerview.help.UIHelp;
 import com.github.jdsjlzx.recyclerview.LRecyclerViewAdapter;
 
 import java.util.ArrayList;
+
+import rx.Observable;
+import rx.Observer;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by linjb on 2016/8/18.
@@ -35,6 +42,11 @@ public class second extends Activity {
 
     private static final int RQUEST_COUNT = 10;
     private static int mCurrent = 0;
+
+    private Observer<ArrayList<JobFavorite>> observer;
+    private Observable observable;
+
+    private static final String TAG = "Bingelin";
 
     private Handler loadingHandler = new Handler() {
         @Override
@@ -75,11 +87,56 @@ public class second extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.second);
         ac = (AppContext) getApplication();
-        loadData();
+//        loadData();
         initView();
         initEvent();
 
+        observer = new Observer<ArrayList<JobFavorite>>() {
+            @Override
+            public void onCompleted() {
+                Log.d(TAG, "Complete!");
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Log.d(TAG, "Error!");
+            }
+
+            @Override
+            public void onNext(ArrayList<JobFavorite> jobFavorites) {
+                mAdapter.setData(jobFavorites);
+                Log.d(TAG, "onNext!");
+            }
+        };
+        observable = Observable.create(new Observable.OnSubscribe<ArrayList<JobFavorite>>() {
+            @Override
+            public void call(Subscriber<? super ArrayList<JobFavorite>> subscriber) {
+                subscriber.onNext(loadData1());
+            }
+        });
+        observable.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(observer);
+
+
     }
+
+    private  ArrayList<JobFavorite> loadData1() {
+        ArrayList<JobFavorite> list = new  ArrayList<JobFavorite>();
+        int pageNo = 0;
+        if (isRefresh) {
+            pageNo = 0;
+        } else if (null != dataList) {
+            pageNo = dataList.size() / RQUEST_COUNT
+                    + 1;
+        }
+        list = ac.getFavorites(pageNo);
+        if (list.size() > 0) {
+            return list;
+        }
+        return null;
+    }
+
 
     private void loadData() {
         new Thread(new Runnable() {
